@@ -1,0 +1,28 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "cloudprovider.go",
+        "debugging.go",
+        "generic.go",
+        "globalflags.go",
+        "kubecloudshared.go",
+        "servicecontroller.go",
+    ],
+    importmap = "k8s.io/cloud-provider-gcp/vendor/k8s.io/kubernetes/cmd/controller-manager/app/options",
+    importpath = "k8s.io/kubernetes/cmd/controller-manager/app/options",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//cmd/cloud-controller-manager/app/cloudprovider:go_default_library",
+        "//vendor/github.com/spf13/pflag:go_default_library",
+        "//vendor/k8s.io/apimachinery/pkg/apis/config:go_default_library",
+        "//vendor/k8s.io/apimachinery/pkg/apis/meta/v1:go_default_library",
+        "//vendor/k8s.io/apimachinery/pkg/util/sets:go_default_library",
+        "//vendor/k8s.io/apiserver/pkg/apis/config:go_default_library",
+        "//vendor/k8s.io/apiserver/pkg/util/flag:go_default_library",
+        "//vendor/k8s.io/apiserver/pkg/util/globalflag:go_default_library",
+        "//vendor/k8s.io/kubernetes/pkg/client/leaderelectionconfig:go_default_library",
+        "//vendor/k8s.io/kubernetes/pkg/controller/apis/config:go_default_library",
+    ],
+)
