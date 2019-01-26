@@ -57,21 +57,39 @@ load(
 
 container_repositories()
 
+container_pull(
+    name = "distroless",
+    digest = "sha256:de63da39d0477a9994276cb1de6cec710d9e293ca667ef01ef189b6c87b554e9",
+    registry = "gcr.io",
+    repository = "distroless/static",
+    # tag = "latest",
+)
+
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
 
 gazelle_dependencies()
 
-http_archive(
-    name = "io_kubernetes_build",
-    sha256 = "21160531ea8a9a4001610223ad815622bf60671d308988c7057168a495a7e2e8",
-    strip_prefix = "repo-infra-b4bc4f1552c7fc1d4654753ca9b0e5e13883429f",
-    urls = ["https://github.com/kubernetes/repo-infra/archive/b4bc4f1552c7fc1d4654753ca9b0e5e13883429f.tar.gz"],
+git_repository(
+    name = "bazel_skylib",
+    remote = "https://github.com/bazelbuild/bazel-skylib.git",
+    tag = "0.6.0",
 )
 
-container_pull(
-    name = "official_busybox",
-    digest = "sha256:cb63aa0641a885f54de20f61d152187419e8f6b159ed11a251a09d115fdff9bd",
-    registry = "index.docker.io",
-    repository = "library/busybox",
-    tag = "latest",  # ignored, but kept here for documentation
+git_repository(
+    name = "io_k8s_repo_infra",
+    commit = "9ddd2bf9f38fdcb24709aaa84561de19f0a75cab",
+    remote = "https://github.com/kubernetes/repo-infra.git",
+)
+
+load("//defs:repo_rules.bzl", "fetch_kube_release")
+
+fetch_kube_release(
+    name = "io_k8s_release",
+    archives = {
+        "kubernetes-server-linux-amd64.tar.gz": "025fbdb24d2dce30b83294d075846620437ca393530a606f9527e3cc2ff184b1",
+        "kubernetes-manifests.tar.gz": "429961a7a8b5cd4680a1da06ebd4653b851e1f91a1132b98c9a3f6d01ee9791c",
+        # we do not currently make modifications to these release tars below
+        "kubernetes-node-linux-amd64.tar.gz": "b25a6fd655edf48d0ba77acf285069bbfdc4a5925e854aa11c5c05ecc5d242ed",
+    },
+    version = "v1.13.2",
 )
